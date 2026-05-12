@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reto - Panel</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>Reto Amigos</h1>
+    <button id="logoutBtn" class="btn small">Salir</button>
+  </header>
+  <nav class="tabs">
+    <button data-tab="ranking" class="active">Clasificación</button>
+    <button data-tab="add">Añadir Registro</button>
+  </nav>
+  <main class="container">
+    <section id="rankingTab" class="stack">
+      <div class="hero">
+        <div>
+          <h2>Clasificación General</h2>
+          <p>Ranking por abdominales, flexiones y total combinado.</p>
+        </div>
+        <span class="tag">Live Feed</span>
+      </div>
+      <div class="grid-2">
+        <div class="panel card">
+          <h3>Abdominales</h3>
+          <div id="rankAb"></div>
+        </div>
+        <div class="panel card">
+          <h3>Flexiones</h3>
+          <div id="rankFl"></div>
+        </div>
+      </div>
+      <div class="panel card">
+        <h3>Total combinado</h3>
+        <div id="rankAll"></div>
+      </div>
+    </section>
+
+    <section id="addTab" class="hidden">
+      <div class="hero">
+        <div>
+          <h2>Añadir registro</h2>
+          <p>Registra repeticiones de abdominales o flexiones.</p>
+        </div>
+        <span class="tag">Upload</span>
+      </div>
+      <div class="panel card">
+      <form id="entryForm">
+        <label>Participante</label>
+        <select id="name" required>
+          <option value="" selected disabled>Selecciona un participante</option>
+          <option value="Gykas Coleman">Gykas Coleman</option>
+          <option value="Legionario Makri">Legionario Makri</option>
+          <option value="Bochenko Matamoros">Bochenko Matamoros</option>
+          <option value="Dei V">Dei V</option>
+          <option value="Clayment">Clayment</option>
+          <option value="THE F*KING BERNI">THE F*KING BERNI</option>
+          <option value="Kekong Kekongo">Kekong Kekongo</option>
+        </select>
+        <label>Ejercicio</label>
+        <select id="exercise">
+          <option value="abdominales">Abdominales</option>
+          <option value="flexiones">Flexiones</option>
+        </select>
+        <label>Cantidad</label>
+        <input id="count" type="number" min="1" required />
+        <button class="btn" type="submit">Añadir</button>
+      </form>
+      </div>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
