@@ -5,6 +5,7 @@ const session = require('express-session');
 const helmet = require('helmet');
 const { Pool } = require('pg');
 const sqlite3 = require('sqlite3').verbose();
+const PgSession = require('connect-pg-simple')(session);
 
 const app = express();
 
@@ -33,7 +34,24 @@ const sqliteDb = usePostgres ? null : new sqlite3.Database(path.join(__dirname, 
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(session({ secret: process.env.SESSION_SECRET || 'secret123', resave: false, saveUninitialized: true }));
+
+// Use PostgreSQL session store in production, memory store for development
+const sessionConfig = {
+  secret: process.env.SESSION_SECRET || 'secret123',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 1000 * 60 * 60 * 24 } // 24 hours
+};
+
+if (usePostgres) {
+  sessionConfig.store = new PgSession({
+    pool: pgPool,
+    tableName: 'session',
+    ttl: 1000 * 60 * 60 * 24 // 24 hours
+  });
+}
+
+app.use(session(sessionConfig));
 
 function normalizeParticipant(name) {
   const value = String(name || '').trim();
@@ -66,6 +84,16 @@ function query(sql, params = []) {
 
 async function initDatabase() {
   if (usePostgres) {
+    // Create session table for connect-pg-simple
+    await pgPool.query(`
+      CREATE TABLE IF NOT EXISTS session (
+        sid varchar NOT NULL COLLATE "default",
+        sess json NOT NULL,
+        expire timestamp(6) NOT NULL,
+        PRIMARY KEY (sid)
+      )
+    `);
+    
     await pgPool.query(`
       CREATE TABLE IF NOT EXISTS entries (
         id BIGSERIAL PRIMARY KEY,
