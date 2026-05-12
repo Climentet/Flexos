@@ -11,6 +11,8 @@
 }
 *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,Arial}
 html{overflow-y:auto;overflow-x:hidden}
+/* Ensure no fixed heights or hidden overflow block mobile scrolling */
+html,body,main,.container{height:auto;min-height:0;overflow:visible;overscroll-behavior:auto}
 body{margin:0;color:var(--text);background:
 	radial-gradient(circle at top left, rgba(0,245,255,.08), transparent 30%),
 	radial-gradient(circle at top right, rgba(0,245,255,.12), transparent 28%),
