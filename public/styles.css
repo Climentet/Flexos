@@ -48,7 +48,7 @@ input:focus,select:focus{border-color:rgba(0,245,255,.55);box-shadow:0 0 0 3px r
 .btn.small{padding:9px 12px;font-size:.82rem}
 .btn:hover{filter:saturate(1.1) brightness(1.05);transform:translateY(-1px)}
 .flex-row{display:flex;gap:12px}
-.card{padding:12px;border-radius:16px;margin-top:10px;overflow:hidden}
+.card{padding:12px;border-radius:16px;margin-top:10px;overflow:visible}
 .card h3{margin:0 0 10px;letter-spacing:.08em;text-transform:uppercase;color:#f0fbff}
 table{width:100%;border-collapse:collapse}
 thead th{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:#9ec7ff;border-bottom:1px solid rgba(0,245,255,.16)}
