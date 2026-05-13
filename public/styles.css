@@ -33,6 +33,7 @@ body::before{
 .subcopy{margin:14px 0 0;text-align:center;color:#c7d7ef;line-height:1.5}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:linear-gradient(180deg, rgba(11,16,36,.92), rgba(8,10,24,.88));backdrop-filter:blur(12px);border-bottom:1px solid var(--line);box-shadow:0 10px 35px rgba(0,0,0,.35);position:sticky;top:0;z-index:5}
 .topbar h1{margin:0;font-size:1.1rem;letter-spacing:.16em;text-transform:uppercase;text-shadow:0 0 10px rgba(0,245,255,.35)}
+.topbar-actions{display:flex;gap:10px;align-items:center}
 .panel,.card{background:linear-gradient(180deg, rgba(11,16,36,.94), rgba(7,10,22,.9));border:1px solid var(--line);box-shadow:var(--shadow)}
 .tabs{display:flex;gap:10px;padding:14px 14px 0;background:transparent}
 .tabs button{flex:1;padding:12px;border:1px solid rgba(0,245,255,.12);background:rgba(10,14,32,.74);color:var(--muted);border-radius:14px;letter-spacing:.04em;text-transform:uppercase}

@@ -107,6 +107,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     enablePushBtn.addEventListener('click', activatePushFromButton);
   }
 
+  const enablePushTopBtn = document.getElementById('enablePushTopBtn');
+  if (enablePushTopBtn) {
+    enablePushTopBtn.addEventListener('click', activatePushFromButton);
+  }
+
   document.getElementById('entryForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('name').value.trim();
