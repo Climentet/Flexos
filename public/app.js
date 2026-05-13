@@ -43,74 +43,44 @@ function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
-async function updatePushStatus(registration) {
-  const statusEl = document.getElementById('pushStatus');
+async function setupPushAutomatically() {
   if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
-    statusEl.textContent = 'Estado: este navegador no soporta push';
     return;
   }
 
-  const permission = Notification.permission;
-  const subscription = await registration.pushManager.getSubscription();
+  try {
+    const registration = await navigator.serviceWorker.register('/sw.js');
+    let subscription = await registration.pushManager.getSubscription();
 
-  if (permission === 'denied') {
-    statusEl.textContent = 'Estado: permiso bloqueado por el navegador';
-    return;
-  }
+    if (!subscription && Notification.permission === 'default') {
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') return;
+    }
 
-  if (subscription) {
-    statusEl.textContent = 'Estado: activadas y listas';
-    return;
-  }
+    if (!subscription && Notification.permission === 'granted') {
+      const publicKeyRes = await api('/api/push/public-key');
+      if (publicKeyRes && publicKeyRes.publicKey) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(publicKeyRes.publicKey)
+        });
+      }
+    }
 
-  if (permission === 'granted') {
-    statusEl.textContent = 'Estado: permiso concedido, falta suscripcion';
-    return;
-  }
-
-  statusEl.textContent = 'Estado: no activadas';
-}
-
-async function enablePush() {
-  if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
-    alert('Tu navegador no soporta notificaciones push.');
-    return;
-  }
-
-  const permission = await Notification.requestPermission();
-  if (permission !== 'granted') {
-    alert('Permiso de notificaciones no concedido.');
-    return;
-  }
-
-  const registration = await navigator.serviceWorker.register('/sw.js');
-  const publicKeyRes = await api('/api/push/public-key');
-  if (!publicKeyRes || !publicKeyRes.publicKey) {
-    alert('No se pudo obtener la clave de notificaciones.');
-    return;
-  }
-
-  let subscription = await registration.pushManager.getSubscription();
-  if (!subscription) {
-    subscription = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(publicKeyRes.publicKey)
-    });
-  }
-
-  const saveRes = await api('/api/push/subscribe', {
-    method: 'POST',
-    body: JSON.stringify({ subscription })
-  });
-
-  if (saveRes && saveRes.ok) {
-    await updatePushStatus(registration);
-    alert('Push activadas. Ya te llegan los avisos del ranking.');
+    if (subscription) {
+      await api('/api/push/subscribe', {
+        method: 'POST',
+        body: JSON.stringify({ subscription })
+      });
+    }
+  } catch (error) {
+    console.error('Error setting up push:', error);
   }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
   loadAll();
+  setupPushAutomatically();
 
   document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', (e) => {
     document.querySelectorAll('.tabs button').forEach((x) => x.classList.remove('active'));
@@ -118,38 +88,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('rankingTab').classList.toggle('hidden', e.target.dataset.tab !== 'ranking');
     document.getElementById('addTab').classList.toggle('hidden', e.target.dataset.tab !== 'add');
   }));
-
-  const registration = ('serviceWorker' in navigator) ? await navigator.serviceWorker.register('/sw.js') : null;
-  if (registration) {
-    await updatePushStatus(registration);
-  } else {
-    document.getElementById('pushStatus').textContent = 'Estado: este navegador no soporta push';
-  }
-
-  document.getElementById('enablePushBtn').addEventListener('click', async () => {
-    try {
-      await enablePush();
-    } catch (error) {
-      alert(`Error activando push: ${error.message}`);
-    }
-  });
-
-  document.getElementById('pushForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const title = document.getElementById('pushTitle').value.trim() || 'OPERACION POLLON';
-    const message = document.getElementById('pushBody').value.trim();
-    if (!message) return alert('Escribe un mensaje.');
-
-    const res = await api('/api/push/broadcast', {
-      method: 'POST',
-      body: JSON.stringify({ title, message, url: '/app.html' })
-    });
-
-    if (res && res.ok) {
-      alert(`Notificacion enviada. Exito: ${res.sent}, fallos: ${res.failed}.`);
-      document.getElementById('pushBody').value = '';
-    }
-  });
 
   document.getElementById('entryForm').addEventListener('submit', async (e) => {
     e.preventDefault();

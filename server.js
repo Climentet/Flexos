@@ -347,26 +347,6 @@ app.post('/api/push/unsubscribe', async (req, res) => {
   }
 });
 
-app.post('/api/push/broadcast', async (req, res) => {
-  try {
-    const title = String(req.body.title || 'OPERACION POLLON').slice(0, 64);
-    const message = String(req.body.message || '').slice(0, 160);
-    const url = String(req.body.url || '/app.html');
-
-    if (!message) return res.status(400).json({ error: 'missing message' });
-
-    const result = await sendPushToAll({
-      title,
-      body: message,
-      url
-    });
-
-    res.json({ ok: true, ...result });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 app.get('/api/ranking', async (req, res) => {
   try {
     const ex = req.query.exercise;

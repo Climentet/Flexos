@@ -63,15 +63,9 @@ tbody tr:hover{background:rgba(0,245,255,.05)}
 .page-title h2{margin:0;font-size:1.1rem;text-transform:uppercase;letter-spacing:.08em}
 .tag{padding:6px 10px;border-radius:999px;background:rgba(0,245,255,.1);border:1px solid rgba(0,245,255,.22);color:#b9f8ff;font-size:.74rem;text-transform:uppercase;letter-spacing:.1em}
 .stack{display:grid;gap:14px}
-.push-panel{display:grid;gap:10px}
-.push-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.push-row h3{margin:0}
-.push-form{display:grid;gap:6px}
-.push-form .btn{justify-self:start}
 @media(max-width:760px){
 	.grid-2,.flex-row{grid-template-columns:1fr;flex-direction:column}
 	.center{margin:16px 12px 20px;padding:20px}
 	.topbar,.container,.tabs{padding-left:12px;padding-right:12px}
 	.hero{flex-direction:column;align-items:flex-start}
-	.push-row{flex-direction:column;align-items:flex-start}
 }
