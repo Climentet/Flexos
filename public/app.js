@@ -45,26 +45,30 @@ function urlBase64ToUint8Array(base64String) {
 
 async function setupPushAutomatically() {
   if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
-    return;
+    return false;
   }
 
   try {
     const registration = await navigator.serviceWorker.register('/sw.js');
-    let subscription = await registration.pushManager.getSubscription();
 
-    if (!subscription && Notification.permission === 'default') {
+    if (Notification.permission === 'default') {
       const permission = await Notification.requestPermission();
-      if (permission !== 'granted') return;
+      if (permission !== 'granted') return false;
     }
 
-    if (!subscription && Notification.permission === 'granted') {
-      const publicKeyRes = await api('/api/push/public-key');
-      if (publicKeyRes && publicKeyRes.publicKey) {
-        subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(publicKeyRes.publicKey)
-        });
-      }
+    if (Notification.permission !== 'granted') {
+      return false;
+    }
+
+    const publicKeyRes = await api('/api/push/public-key');
+    if (!publicKeyRes || !publicKeyRes.publicKey) return false;
+
+    let subscription = await registration.pushManager.getSubscription();
+    if (!subscription) {
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicKeyRes.publicKey)
+      });
     }
 
     if (subscription) {
@@ -72,15 +76,18 @@ async function setupPushAutomatically() {
         method: 'POST',
         body: JSON.stringify({ subscription })
       });
+      return true;
     }
   } catch (error) {
     console.error('Error setting up push:', error);
   }
+
+  return false;
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
   loadAll();
-  setupPushAutomatically();
+  await setupPushAutomatically();
 
   document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', (e) => {
     document.querySelectorAll('.tabs button').forEach((x) => x.classList.remove('active'));
@@ -97,7 +104,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!name || !count) return alert('Rellena todos los campos');
     if (!allowedParticipants.has(name)) return alert('El participante no esta permitido');
     const res = await api('/api/entry', { method: 'POST', body: JSON.stringify({ name, exercise, count }) });
-    if (res && res.ok) { alert('Registro guardado y push lanzada'); document.getElementById('entryForm').reset(); loadAll(); }
+    if (res && res.ok) {
+      document.getElementById('entryForm').reset();
+      loadAll();
+      await setupPushAutomatically();
+      alert('Registro guardado y push lanzada');
+    }
   });
 
   document.getElementById('logoutBtn').addEventListener('click', async () => { await fetch('/logout', { method: 'POST' }); location.href = '/'; });
