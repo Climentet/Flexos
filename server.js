@@ -207,7 +207,19 @@ function buildAutoPushMessage({ name, exercise, count, beforeRows, afterRows }) 
   const exLabel = exercise === 'abdominales' ? 'abdominales' : 'flexiones';
 
   if (overtaken) {
-    return `${name} mete ${count} ${exLabel} y adelanta a ${overtaken}.`;
+    const adelantamientos = [
+      `${name} se ha metido tanto tusi que ha adelantado a un Ferrari por el carril izquierdo haciendo ${exLabel}.`,
+      `${name} se ha metido tanto speed que ha adelantado a Usain Bolt en los 100 metros lisos haciendo ${exLabel} con una sola mano.`,
+      `${name} se ha metido tanta farlopa que ha adelantado al AVE de las 8:30 haciendo ${exLabel} con palmada.`,
+      `${name} se ha metido tanto cristal que ha adelantado a un Eurofighter despegando a base de hacer ${exLabel} de pino.`,
+      `${name} se ha metido tanto MDMA que ha adelantado a un patinete eléctrico trucado en pleno carril bici haciendo ${exLabel}.`,
+      `${name} se ha metido tanto perico que ha adelantado a Fernando Alonso en la recta de meta haciendo ${exLabel}.`,
+      `${name} se ha metido tantas pastillas que ha adelantado a un galgo de carreras haciendo ${exLabel} en el asfalto.`,
+      `${name} se ha metido tanto popper que ha adelantado a un Tesla en modo turbo subiendo un puerto de montaña haciendo ${exLabel}.`,
+      `${name} se ha metido tanto caballo que le ha dado la vuelta al ciego y ha adelantado a una moto GP haciendo ${exLabel} estilo CrossFit.`,
+      `${name} se ha metido tanta base que ha adelantado a la propia luz del sol haciendo ${exLabel} en dirección a La Meca.`
+    ];
+    return adelantamientos[Math.floor(Math.random() * adelantamientos.length)];
   }
 
   if (movement > 0) {
