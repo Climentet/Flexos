@@ -87,13 +87,60 @@ async function setupPushAutomatically() {
 
 async function activatePushFromButton() {
   const ok = await setupPushAutomatically();
-  alert(ok ? 'Notificaciones activadas' : 'No se pudieron activar las notificaciones');
+  if (ok) {
+    updatePushButtons(true);
+    alert('Notificaciones activadas');
+  } else {
+    alert('No se pudieron activar las notificaciones');
+  }
   return ok;
+}
+
+async function checkPushStatus() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    return false;
+  }
+  
+  try {
+    const registration = await navigator.serviceWorker.getRegistration('/sw.js');
+    if (!registration) return false;
+    
+    const subscription = await registration.pushManager.getSubscription();
+    return subscription !== null;
+  } catch (error) {
+    console.error('Error checking push status:', error);
+    return false;
+  }
+}
+
+function updatePushButtons(isActive) {
+  const enablePushBtn = document.getElementById('enablePushBtn');
+  const enablePushTopBtn = document.getElementById('enablePushTopBtn');
+  
+  if (isActive) {
+    if (enablePushBtn) {
+      enablePushBtn.style.display = 'none';
+    }
+    if (enablePushTopBtn) {
+      enablePushTopBtn.style.display = 'none';
+    }
+  } else {
+    if (enablePushBtn) {
+      enablePushBtn.style.display = 'inline-flex';
+    }
+    if (enablePushTopBtn) {
+      enablePushTopBtn.style.display = 'inline-flex';
+    }
+  }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
   loadAll();
   await setupPushAutomatically();
+  
+  // Check and update push button status
+  const isPushActive = await checkPushStatus();
+  updatePushButtons(isPushActive);
 
   document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', (e) => {
     document.querySelectorAll('.tabs button').forEach((x) => x.classList.remove('active'));
@@ -124,6 +171,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('entryForm').reset();
       loadAll();
       await setupPushAutomatically();
+      const isPushActive = await checkPushStatus();
+      updatePushButtons(isPushActive);
       alert('Registro guardado y push lanzada');
     }
   });
