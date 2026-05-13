@@ -1,4 +1,4 @@
-﻿async function api(path, opts) {
+async function api(path, opts) {
   const res = await fetch(path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opts));
   if (res.status === 401) { alert('Sesion expirada. Vuelve al inicio.'); location.href = '/'; return null; }
   return res.json();
@@ -85,6 +85,12 @@ async function setupPushAutomatically() {
   return false;
 }
 
+async function activatePushFromButton() {
+  const ok = await setupPushAutomatically();
+  alert(ok ? 'Notificaciones activadas' : 'No se pudieron activar las notificaciones');
+  return ok;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   loadAll();
   await setupPushAutomatically();
@@ -95,6 +101,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('rankingTab').classList.toggle('hidden', e.target.dataset.tab !== 'ranking');
     document.getElementById('addTab').classList.toggle('hidden', e.target.dataset.tab !== 'add');
   }));
+
+  const enablePushBtn = document.getElementById('enablePushBtn');
+  if (enablePushBtn) {
+    enablePushBtn.addEventListener('click', activatePushFromButton);
+  }
 
   document.getElementById('entryForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -114,4 +125,3 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.getElementById('logoutBtn').addEventListener('click', async () => { await fetch('/logout', { method: 'POST' }); location.href = '/'; });
 });
-

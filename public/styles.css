@@ -39,6 +39,7 @@ body::before{
 .tabs button.active{color:var(--text);border-color:rgba(0,245,255,.45);box-shadow:0 0 0 1px rgba(255,61,242,.18), 0 0 20px rgba(0,245,255,.14);background:linear-gradient(180deg, rgba(0,245,255,.14), rgba(255,61,242,.10))}
 .container{width:min(100%,1100px);padding:16px 16px 24px;margin:0 auto}
 .hero{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin:6px 0 18px;padding:18px;border-radius:18px;background:linear-gradient(135deg, rgba(0,245,255,.08), rgba(255,61,242,.06));border:1px solid var(--line)}
+.hero-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
 .hero h2,.hero h3{margin:0}
 .hero p{margin:6px 0 0;color:var(--muted)}
 .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
