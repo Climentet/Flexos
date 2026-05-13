@@ -1,4 +1,4 @@
-async function api(path, opts) {
+﻿async function api(path, opts) {
   const res = await fetch(path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opts));
   if (res.status === 401) { alert('Sesion expirada. Vuelve al inicio.'); location.href = '/'; return null; }
   return res.json();
@@ -102,3 +102,4 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.getElementById('logoutBtn').addEventListener('click', async () => { await fetch('/logout', { method: 'POST' }); location.href = '/'; });
 });
+
