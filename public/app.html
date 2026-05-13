@@ -24,6 +24,22 @@
         </div>
         <span class="tag">Live Feed</span>
       </div>
+      <div class="panel card push-panel">
+        <div class="push-row">
+          <div>
+            <h3>Notificaciones Push</h3>
+            <p class="muted" id="pushStatus">Estado: no activadas</p>
+          </div>
+          <button id="enablePushBtn" class="btn small" type="button">Activar Push</button>
+        </div>
+        <form id="pushForm" class="push-form">
+          <label>Título</label>
+          <input id="pushTitle" maxlength="64" placeholder="OPERACION POLLON" />
+          <label>Mensaje canalla</label>
+          <input id="pushBody" maxlength="160" placeholder="Bochenko la esta partiendo con 50 dominadas" required />
+          <button class="btn" type="submit">Enviar notificación</button>
+        </form>
+      </div>
       <div class="grid-2">
         <div class="panel card">
           <h3>Abdominales</h3>
